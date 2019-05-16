@@ -11,6 +11,30 @@
 
 @snap[west span-50]
 ## Customize Slide Content Layout
+
+for indice, l in enumerate(orbitas):
+        calendario[i*5+indice,0] = mag[1,1]
+        calendario[i*5+indice,1] = indice+1
+        pos = l * 3390
+        X_MSO = pos[:, 0]
+        Z_MSO = pos[:, 2]
+        idx_min = np.zeros(int(una_vuelta/paso))
+        max_acercamiento = np.zeros(int(una_vuelta/paso))
+        minimo = 0
+        for k in range(int(una_vuelta)-100):
+            if k%paso == 0 and Z_MSO[k] > 0 and X_MSO[k] > 0:
+                for m in range(len(R)):
+                    resta[m, :] = l[k,:] - R[m,:]
+                A = np.linalg.norm(resta, axis=1)
+                idx_min[int(k/paso)] = np.argmin(A)
+                max_acercamiento[int(k/paso)] = A[int(idx_min[int(k/paso)])]
+        if sum(max_acercamiento) == 0: #si es cero, va a fallar todo el script, así que digo que esa órbita es mala y listo
+            calendario[i*5+indice,2] = 0
+            calendario[i*5+indice, 3] = 0
+            calendario[i*5+indice,4] = 0
+        else:
+            minimo = np.where( max_acercamiento==np.min(max_acercamiento[np.nonzero(max_acercamiento)]))[0][0] #busca el minimo que no sea cero
+
 @snapend
 
 @snap[east span-50]
